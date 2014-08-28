@@ -29,17 +29,18 @@ public class CoprocessorTest {
 //		String coprocessClassName = "org.apache.hadoop.hbase.coprocessor.AggregateImplementation";
 //		
 //		HBaseAdmin admin = new HBaseAdmin(conf);
-//		admin.disableTable("test3");
-//		HTableDescriptor htd = admin.getTableDescriptor(Bytes.toBytes("test3"));
+//		admin.disableTable("xyz");
+//		HTableDescriptor htd = admin.getTableDescriptor(Bytes.toBytes("xyz"));
 //		htd.addCoprocessor(coprocessClassName);
-//		admin.modifyTable(Bytes.toBytes("test3"), htd);
-//		admin.enableTable("test3");
+//		admin.modifyTable(Bytes.toBytes("xyz"), htd);
+//		admin.enableTable("xyz");
 //		admin.close();
 		sum();
 		
 	}
 	
 	public static void count() {
+		long begin = System.currentTimeMillis();
 		AggregationClient ac = new AggregationClient(conf);
 		Scan scan = new Scan();
 //		scan.setStartRow(Bytes.toBytes("3"));
@@ -54,18 +55,26 @@ public class CoprocessorTest {
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
+		long end = System.currentTimeMillis();
+		System.out.println(end - begin);
 	}
 	
 	public static void sum() {
+		long begin = System.currentTimeMillis();
 		AggregationClient ac = new AggregationClient(conf);
 		Scan scan = new Scan();
-		scan.addColumn(Bytes.toBytes("fal"), Bytes.toBytes("val2"));
+		scan.addColumn(Bytes.toBytes("detail"), Bytes.toBytes("value2"));
 		Double sum = 0.0;
 		try {
-			sum = ac.max(Bytes.toBytes("test3"), new DoubleColumnInterpreter(), scan);
+			sum = ac.max(Bytes.toBytes("xyz"), new DoubleColumnInterpreter(), scan);
+//			ac.sum(Bytes.toBytes("xyz"), new DoubleColumnInterpreter(), scan);
+//			ac.avg(Bytes.toBytes("xyz"), new DoubleColumnInterpreter(), scan);
+//			ac.min(Bytes.toBytes("xyz"), new DoubleColumnInterpreter(), scan);
 			System.out.println(sum);
 		} catch (Throwable e) {
 			e.printStackTrace();
 		}
+		long end = System.currentTimeMillis();
+		System.out.println(end - begin);
 	}
 }
